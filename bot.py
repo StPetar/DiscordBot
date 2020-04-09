@@ -14,17 +14,24 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    if message.content.startswith('hi'):
-        await message.channel.send(f'Hello, {message.author}!')
+
+    greetings =['hi', 'hello', 'sup', 'yo']
+
+    for greeting in greetings:
+        if greeting in message.content:
+            await message.channel.send(f"Hello {message.author}!")
 
 @client.event
 async def on_member_join(member):
     channel = client.get_channel(697808268818645014)
+    print(member.nick)
     await channel.send(f'{member} has joined the server!')
+
 
 @client.event
 async def on_member_remove(member):
     channel = client.get_channel(697808268818645014)
-    await channel.send(f'{member} has left the server ;(')
+
+    await channel.send(f'{member.nick} ({member}) has left the server ;(')
 
 client.run(TOKEN)
