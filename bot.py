@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 client = discord.Client()
-client = commands.Bot(command_prefix='!')
+bot = commands.Bot(command_prefix='!', case_insensitive=True)
 
 
 @client.event
@@ -41,14 +41,13 @@ async def on_member_remove(member):
     await channel.send(f'{member.nick} ({member}) has left the server ;(')
 
 
-@client.command()
+@bot.command()
 async def ping(ctx):
-    await ctx.send('Pong!')
+    await ctx.send(f'Pong! {ctx.author}')
 
 
-@client.command(aliases=['8ball'])
+@bot.command(aliases=['8ball'])
 async def _8ball(ctx, *, question):
-    await ctx.send('Pong!')
     responses = ['As I see it, yes.',
                  ' Ask again later.',
                  ' Better not tell you now.',
@@ -70,5 +69,5 @@ async def _8ball(ctx, *, question):
                  ' Yes – definitely.',
                  ' You may rely on it.']
     await ctx.send(f'Question: {question}\nAnswer: {random.choice(responses)}')
-
+    print(TOKEN)
     client.run(TOKEN)
