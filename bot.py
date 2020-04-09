@@ -6,7 +6,30 @@ from dotenv import load_dotenv
 
 load_dotenv()
 bot_channel = 697808268818645014  # copy ID from Discord
-bot = commands.Bot(command_prefix='.')
+
+
+def get_prefix(client, message):
+    prefixes = ['=', '==', '-', '.', '!', '$', '?',
+                '-']  # sets the prefixes, u can keep it as an array of only 1 item if you need only one prefix
+
+    # Allow users to @mention the bot instead of using a prefix when using a command. Also optional
+    # Do `return prefixes` if u don't want to allow mentions instead of prefix.
+    return commands.when_mentioned_or(*prefixes)(client, message)
+
+
+bot = commands.Bot(  # Create a new bot
+    command_prefix=get_prefix,  # Set the prefix
+
+    # Set a description for the bot
+    description=''' 
+    A dumbass made me\n
+    Availble prefixes to use with commands:\n
+    =, ==, -, ., !, $, ?, -
+    ''',
+    owner_id=234381060018929664,  # Your unique User ID
+    case_insensitive=True  # Make the commands case insensitive
+)
+cogs = ['cogs.basic', 'cogs.embed']  # Load files from cogs directory
 
 
 @bot.event
@@ -14,7 +37,11 @@ async def on_ready():
     print(f'{bot.user} has connected to Discord!')
     await bot.change_presence(
         activity=discord.Game(
-            name=f"Use {bot.command_prefix} to interact with me!"))  # Changes bot activity
+            name="with myself"))  # Changes bot activity
+    bot.remove_command('help')  # Removes the help command
+    for cog in cogs:
+        bot.load_extension(cog)
+    return
 
 
 @bot.event
@@ -30,40 +57,4 @@ async def on_member_remove(member):
 
     await channel.send(f'{member.nick} ({member}) has left the server ;(')  # Announce member leaving
 
-
-@bot.command()
-async def ping(ctx):
-    await ctx.send(f'Pong!, {ctx.author}')  # Ping Pong game
-
-
-@bot.command(pass_context=True, aliases=['hi', 'hey', 'sup', 'yo'])
-async def hello(ctx):
-    await ctx.send(f"Hello {ctx.author}!")  # Handles greetings
-
-
-@bot.command()  # 8ball game
-async def _8ball(ctx, *, question):
-    responses = ['As I see it, yes.',
-                 ' Ask again later.',
-                 ' Better not tell you now.',
-                 'Cannot predict now.',
-                 ' Concentrate and ask again.',
-                 ' Don’t count on it.',
-                 ' It is certain.',
-                 'It is decidedly so.',
-                 ' Most likely.',
-                 ' My reply is no.',
-                 ' My sources say no.',
-                 ' Outlook not so good.',
-                 ' Outlook good.',
-                 ' Reply hazy, try again.',
-                 ' Signs point to yes.',
-                 ' Very doubtful.',
-                 ' Without a doubt.',
-                 ' Yes.',
-                 ' Yes – definitely.',
-                 ' You may rely on it.']
-    await ctx.send(f'Question: {question}\nAnswer: {random.choice(responses)}')
-
-
-bot.run(os.getenv('DISCORD_TOKEN'))
+bot.run(os.getenv('DISCORD_TOKEN'), bot=True, reconnect=True)
