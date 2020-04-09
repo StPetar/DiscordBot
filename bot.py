@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 bot_channel = 697808268818645014  # copy ID from Discord
-bot = commands.Bot(command_prefix='-', )
+bot = commands.Bot(command_prefix='-')
 
 
 @bot.event
@@ -41,12 +41,25 @@ async def on_member_remove(member):
     await channel.send(f'{member.nick} ({member}) has left the server ;(')  # Announce member leaving
 
 
-@bot.command(pass_context=True)
+@bot.command()
+async def test(ctx, arg):
+    await ctx.send(arg)
+
+@bot.command()
+async def test2(ctx, *args):
+    await ctx.send('{} arguments: {}'.format(len(args), ', '.join(args)))
+
+
+
+
+
+
+@bot.command()
 async def ping(ctx):
-    await ctx.channel.send(f'Pong!, {ctx.author}')  # Ping Pong game
+    await ctx.send(f'Pong!, {ctx.author}')  # Ping Pong game
 
 
-@bot.command(aliases=['8ball', 'test'])  # 8ball game
+@bot.command()  # 8ball game
 async def _8ball(ctx, *, question):
     responses = ['As I see it, yes.',
                  ' Ask again later.',
@@ -68,7 +81,7 @@ async def _8ball(ctx, *, question):
                  ' Yes.',
                  ' Yes – definitely.',
                  ' You may rely on it.']
-    await ctx.channel.send(f'Question: {question}\nAnswer: {random.choice(responses)}')
+    await ctx.send(f'Question: {question}\nAnswer: {random.choice(responses)}')
 
 
 bot.run(os.getenv('DISCORD_TOKEN'))
