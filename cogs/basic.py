@@ -10,6 +10,8 @@ class Basic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+
+
     # Define a new command
     @commands.command(
         name='ping',
@@ -77,7 +79,7 @@ class Basic(commands.Cog):
         aliases=['ball', 'fortune'],
 
     )
-    async def ball_command(self, ctx,  *, question):  # renamed from _8ball to ball until i learn to code
+    async def ball_command(self, ctx, *, question):  # renamed from _8ball to ball until i learn to code
         responses = [' As I see it, yes.',
                      ' Ask again later.',
                      ' Better not tell you now.',

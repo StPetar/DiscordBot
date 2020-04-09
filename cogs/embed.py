@@ -3,6 +3,7 @@ import discord
 import random
 
 # Color constants are taken from discord.js library
+
 colors = {
     'DEFAULT': 0x000000,
     'WHITE': 0xFFFFFF,
@@ -186,6 +187,40 @@ class Embed(commands.Cog):
 
         await ctx.send(embed=help_embed)
 
+        return
+
+    @commands.command(
+        name='info',
+        description='Show bot info',
+        aliases=['i']
+    )
+    async def info_command(self, ctx):
+        color_list = [c for c in colors.values()]
+        info_embed = discord.Embed(
+            title='Info',
+            color=random.choice(color_list)
+        )
+        info_embed.set_thumbnail(url=self.bot.user.avatar_url)
+        info_embed.set_footer(
+            text=f'Requested by {ctx.message.author.name}',
+            icon_url=self.bot.user.avatar_url
+        )
+
+        info_embed.add_field(
+            name='Author',
+            value='The Pesh',
+            inline=False
+        )
+        info_embed.add_field(
+            name="Description",
+            value=''' 
+    A dumbass made me\n
+    Available prefixes to use with commands:\n
+    =, ==, -, ., !, $, ?, -
+    ''',
+            inline=False
+        )
+        await ctx.send(embed=info_embed)
         return
 
 
