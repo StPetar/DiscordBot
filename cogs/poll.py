@@ -1,111 +1,71 @@
 import discord
-import asyncio
 from discord.ext import commands
-import random
 
 
-
+# New - The Cog class must extend the commands.Cog class
 class Poll(commands.Cog):
+
     def __init__(self, bot):
         self.bot = bot
 
-        self.emojiLetters = [
-            "\N{REGIONAL INDICATOR SYMBOL LETTER A}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER B}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER C}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER D}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER E}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER F}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER G}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER H}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER I}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER J}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER K}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER L}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER M}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER N}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER O}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER P}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER Q}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER R}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER S}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER T}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER U}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER V}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER W}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER X}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER Y}",
-            "\N{REGIONAL INDICATOR SYMBOL LETTER Z}"
-        ]
+    """"""
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if not message.author.bot:
-            if message.content.startswith("+poll") or message.content.startswith("poll:") or message.content.startswith("Poll:") or message.content.startswith("+poll:") or message.content.startswith("+Poll:"):
-                messageContent = message.clean_content
-                if messageContent.find("{") == -1:
-                    await message.add_reaction('👍')
-                    await message.add_reaction('👎')
-                    await message.add_reaction('🤷')
-                else:
-                    first = messageContent.find("{") + 1
-                    second = messageContent.find("}")
-                    title = messageContent[first:second]
+    @commands.command(
+        name='poll',
+        description='Create a poll'
+    )
+    async def quickpoll(self, ctx, question, *options: str):
+        if len(options) <= 1:
+            await ctx.send('You need more than one option to make a poll!')
+            return
+        if len(options) > 10:
+            await ctx.send('You cannot make a poll for more than 10 things!')
+            return
 
-                    # gets the # of options and assigns them to an array
-                    newMessage = messageContent[second:]
-                    loopTime = 0
+        if len(options) == 2 and options[0] == 'yes' and options[1] == 'no':
+            reactions = ['✅', '❌']
+        else:
+            reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟']
 
-                    option = []
-                    for options in messageContent:
-                        # get from } [option 1]
-                        stillOptions = newMessage.find("[")
-                        if stillOptions != -1:
-                            if loopTime == 0:
-                                first = newMessage.find("[") + 1
-                                second = newMessage.find("]")
-                                second1 = second + 1
-                                option.append(newMessage[first:second])
-                                loopTime += 1
-                            else:
-                                newMessage = newMessage[second1:]
-                                first = newMessage.find("[") + 1
-                                second = newMessage.find("]")
-                                second1 = second + 1
-                                option.append(newMessage[first:second])
-                                loopTime += 1
+        description = []
+        for x, option in enumerate(options):
+            description += '\n \n {} {}'.format(reactions[x], option)
+        embed = discord.Embed(title=question, description=''.join(description))
+        react_message = await ctx.send(embed=embed)
+        for reaction in reactions[:len(options)]:
+            await react_message.add_reaction(reaction)
+        embed.set_footer(text='Poll ID: {}'.format(react_message.id))
+        await ctx.edit_message(react_message, embed=embed)
 
-                    try:
-                        pollMessage = ""
-                        i = 0
-                        for choice in option:
-                            if not option[i] == "":
-                                if len(option) > 21:
-                                    await message.channel.send("Maximum of 20 options")
-                                    return
-                                elif not i == len(option) - 1:
-                                    pollMessage = pollMessage + "\n\n" + self.emojiLetters[i] + " " + choice
-                            i += 1
+    @commands.command(pass_context=True)
+    async def tally(self, ctx, id):
+        poll_message = await self.bot.get_message(ctx.message.channel, id)
+        if not poll_message.embeds:
+            return
+        embed = poll_message.embeds[0]
+        if poll_message.author != ctx.message.server.me:
+            return
+        if not embed['footer']['text'].startswith('Poll ID:'):
+            return
+        unformatted_options = [x.strip() for x in embed['description'].split('\n')]
+        opt_dict = {x[:2]: x[3:] for x in unformatted_options} if unformatted_options[0][0] == '1' \
+            else {x[:1]: x[2:] for x in unformatted_options}
+        # check if we're using numbers for the poll, or x/checkmark, parse accordingly
+        voters = [ctx.message.server.me.id]  # add the bot's ID to the list of voters to exclude it's votes
 
-                        ads = ["\n\n[Don't let eye strain ruin your day. Protect your eyes from harmful blue light using Bakery Gaming's glasses. Use code 'Poll Bot' for 20% off your order.](https://bakerygaming.store/collections/all)"]
+        tally = {x: 0 for x in opt_dict.keys()}
+        for reaction in poll_message.reactions:
+            if reaction.emoji in opt_dict.keys():
+                reactors = await self.bot.get_reaction_users(reaction)
+                for reactor in reactors:
+                    if reactor.id not in voters:
+                        tally[reaction.emoji] += 1
+                        voters.append(reactor.id)
 
+        output = 'Results of the poll for "{}":\n'.format(embed['title']) + \
+                 '\n'.join(['{}: {}'.format(opt_dict[key], tally[key]) for key in tally.keys()])
+        await ctx.send(output)
 
-
-                        e = discord.Embed(title="**" + title + "**",
-                                description=pollMessage + ads[0],
-                                          colour=0x83bae3)
-                        pollMessage = await message.channel.send(embed=e)
-                        i = 0
-                        final_options = []  # There is a better way to do this for sure, but it also works that way
-                        for choice in option:
-                            if not i == len(option) - 1 and not option[i] == "":
-                                final_options.append(choice)
-                                await pollMessage.add_reaction(self.emojiLetters[i])
-                            i += 1
-                    except KeyError:
-                        return "Please make sure you are using the format 'poll: {title} [Option1] [Option2] [Option 3]'"
-            else:
-                return
 
 def setup(bot):
-    bot.add_cog(Poll(bot))
+    bot.add_cog(Poll(bot))  # Adds the Basic commands to the bot

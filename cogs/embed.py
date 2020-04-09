@@ -138,11 +138,7 @@ class Embed(commands.Cog):
                     name=cog,
                     value=commands_list,
                     inline=False
-                ).add_field(
-                    name='\u200b', value='\u200b', inline=False
                 )
-
-                # Also added a blank field '\u200b' is a whitespace character.
             pass
         else:
 
