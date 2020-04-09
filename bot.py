@@ -1,37 +1,60 @@
 import os
 import discord
+import random
+from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
-client = discord.Client()
+bot_channel = 697808268818645014  # copy ID from Discord
 
-@client.event
+
+def get_prefix(client, message):
+    prefixes = ['=', '==', '-', '.', '!', '$', '?',
+                '-']  # sets the prefixes, u can keep it as an array of only 1 item if you need only one prefix
+
+    # Allow users to @mention the bot instead of using a prefix when using a command. Also optional
+    # Do `return prefixes` if u don't want to allow mentions instead of prefix.
+    return commands.when_mentioned_or(*prefixes)(client, message)
+
+
+bot = commands.Bot(  # Create a new bot
+    command_prefix=get_prefix,  # Set the prefix
+
+    # Set a description for the bot
+    description=''' 
+    A dumbass made me\n
+    Availble prefixes to use with commands:\n
+    =, ==, -, ., !, $, ?, -
+    ''',
+    owner_id=234381060018929664,  # Your unique User ID
+    case_insensitive=True  # Make the commands case insensitive
+)
+cogs = ['cogs.basic', 'cogs.embed']  # Load files from cogs directory
+
+
+@bot.event
 async def on_ready():
-    print(f'{client.user} has connected to Discord!')
+    print(f'{bot.user} has connected to Discord!')
+    await bot.change_presence(
+        activity=discord.Game(
+            name="with myself"))  # Changes bot activity
+    bot.remove_command('help')  # Removes the help command
+    for cog in cogs:
+        bot.load_extension(cog)
+    return
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
 
-    greetings =['hi', 'hello', 'sup', 'yo']
-
-    for greeting in greetings:
-        if greeting in message.content:
-            await message.channel.send(f"Hello {message.author}!")
-
-@client.event
+@bot.event
 async def on_member_join(member):
-    channel = client.get_channel(697808268818645014)
+    channel = bot.get_channel(bot_channel)
     print(member.nick)
-    await channel.send(f'{member} has joined the server!')
+    await channel.send(f'{member} has joined the server!')  # Announce member joining
 
 
-@client.event
+@bot.event
 async def on_member_remove(member):
-    channel = client.get_channel(697808268818645014)
+    channel = bot.get_channel(bot_channel)
 
-    await channel.send(f'{member.nick} ({member}) has left the server ;(')
+    await channel.send(f'{member.nick} ({member}) has left the server ;(')  # Announce member leaving
 
-client.run(TOKEN)
+bot.run(os.getenv('DISCORD_TOKEN'), bot=True, reconnect=True)
