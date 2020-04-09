@@ -55,7 +55,7 @@ async def on_member_join(member):
 async def on_member_remove(member):
     channel = bot.get_channel(bot_channel)
 
-    await channel.send(f'{member.nick} ({member}) has left the server ;(')  # Announce member leaving
+    await channel.send(f'{member} ({member.nick}) has left the server ;(')  # Announce member leaving
 
 
 # @bot.event
