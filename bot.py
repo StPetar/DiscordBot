@@ -1,11 +1,11 @@
 import os
 import discord
-import random
 from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
-bot_channel = 697808268818645014  # copy ID from Discord
+bot_channel = 415919199760941058  # copy ID from Discord
+spit_chanel = 697802630923157638  # test server general channel
 
 
 def get_prefix(client, message):
@@ -56,5 +56,15 @@ async def on_member_remove(member):
     channel = bot.get_channel(bot_channel)
 
     await channel.send(f'{member.nick} ({member}) has left the server ;(')  # Announce member leaving
+
+
+# @bot.event
+# async def job():
+#     channel = bot.get_channel(bot_channel)
+#     await channel.send('@zhekoff#4341 :PepeSpit:')
+#     await schedule.every(5).seconds.do(job)
+#     while True:
+#         schedule.run_pending()
+#         time.sleep(1)
 
 bot.run(os.getenv('DISCORD_TOKEN'), bot=True, reconnect=True)
