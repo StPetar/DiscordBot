@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 bot_channel = 697808268818645014  # copy ID from Discord
-bot = commands.Bot(command_prefix='-')
+bot = commands.Bot(command_prefix='.')
 
 
 @bot.event
@@ -14,17 +14,7 @@ async def on_ready():
     print(f'{bot.user} has connected to Discord!')
     await bot.change_presence(
         activity=discord.Game(
-            name=f"Hi, I'm {bot.user.name}.\n Use {bot.command_prefix} to interact with me!"))  # Changes bot activity
-
-
-@bot.event
-async def on_message(message):
-    if message.author == bot.user:
-        return
-    greetings = ['hi', 'hello', 'sup', 'yo']
-    for greeting in greetings:
-        if greeting in message.content:
-            await message.channel.send(f"Hello {message.author}!")  # Handles greetings
+            name=f"Use {bot.command_prefix} to interact with me!"))  # Changes bot activity
 
 
 @bot.event
@@ -42,21 +32,13 @@ async def on_member_remove(member):
 
 
 @bot.command()
-async def test(ctx, arg):
-    await ctx.send(arg)
-
-@bot.command()
-async def test2(ctx, *args):
-    await ctx.send('{} arguments: {}'.format(len(args), ', '.join(args)))
-
-
-
-
-
-
-@bot.command()
 async def ping(ctx):
     await ctx.send(f'Pong!, {ctx.author}')  # Ping Pong game
+
+
+@bot.command(pass_context=True, aliases=['hi', 'hey', 'sup', 'yo'])
+async def hello(ctx):
+    await ctx.send(f"Hello {ctx.author}!")  # Handles greetings
 
 
 @bot.command()  # 8ball game
