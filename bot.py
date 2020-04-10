@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 bot_channel = 415919199760941058  # copy ID from Discord
 spit_chanel = 697802630923157638  # test server general channel
+GUILD = os.getenv('DISCORD_GUILD')
 
 
 def get_prefix(client, message):
@@ -66,5 +67,5 @@ async def on_member_remove(member):
 #     while True:
 #         schedule.run_pending()
 #         time.sleep(1)
-
-bot.run(os.getenv('DISCORD_TOKEN'), bot=True, reconnect=True)
+# bot.run(TOKEN, bot=True, reconnect=True)
+bot.run(os.getenv('DISCORD_TOKEN'))
