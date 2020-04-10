@@ -29,7 +29,7 @@ bot = commands.Bot(  # Create a new bot
     owner_id=234381060018929664,  # Your unique User ID
     case_insensitive=True  # Make the commands case insensitive
 )
-cogs = ['cogs.basic', 'cogs.embed', 'cogs.poll']  # Load files from cogs directory
+cogs = ['cogs.basic', 'cogs.embed', 'cogs.poll', 'cogs.music']  # Load files from cogs directory
 
 
 @bot.event

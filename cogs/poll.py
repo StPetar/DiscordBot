@@ -40,5 +40,6 @@ class Poll(commands.Cog):
             embed=embed,
         )
 
+
 def setup(bot):
     bot.add_cog(Poll(bot))  # Adds the Basic commands to the bot
