@@ -68,7 +68,7 @@ class Basic(commands.Cog):
         name='hello',
         description='Greetings',
         aliases=['hey', 'hi', 'sup', 'yo', 'waddap'],
-        usage='<text>'
+        usage=''
     )
     async def hello_command(self, ctx):
         await ctx.send(f"Hello {ctx.author}!")  # Handles greetings
@@ -77,6 +77,7 @@ class Basic(commands.Cog):
         name='8ball',
         description='A fortune telling 8ball',
         aliases=['ball', 'fortune'],
+        usage='<question>'
 
     )
     async def ball_command(self, ctx, *, question):  # renamed from _8ball to ball until i learn to code

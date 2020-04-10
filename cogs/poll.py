@@ -12,7 +12,8 @@ class Poll(commands.Cog):
 
     @commands.command(
         name='poll',
-        description='Create a poll'
+        description='Create a poll',
+        usage='[option1], [option2], [option3], [option4]... 10 options'
     )
     async def quickpoll(self, ctx, question, *options: str):
         if len(options) <= 1:
