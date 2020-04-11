@@ -85,8 +85,8 @@ class Music(commands.Cog):
             except:
                 pass
 
-    @commands.command(pass_context=True, no_pm=True)
-    async def join(self, ctx):
+    #  @commands.command(pass_context=True, no_pm=True)
+    #  async def join(self, ctx):
 
 
     @commands.command(pass_context=True, no_pm=True)

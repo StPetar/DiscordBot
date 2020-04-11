@@ -1,2 +1,2 @@
 #! /bin/bash
-nohup python3 pcmain.py &
+nohup python3 bot.py &
