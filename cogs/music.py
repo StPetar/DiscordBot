@@ -44,7 +44,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
     ytdl = youtube_dl.YoutubeDL(ytdl_opts)
 
-    def __init__(self, message, source, *, data, volume=0.5):
+    def __init__(self, message, source, *, data, volume=0.15):
         super().__init__(source, volume)
 
         self.requester = message.author
