@@ -5,9 +5,8 @@ from .utils.checks import load_optional_config, embed_perms, get_google_entries
 from .utils.config import get_config_value
 import urllib.parse
 
-'''Module for google web and image search.'''
 
-
+# Module for google web and image search.
 # Used Rapptz's implementation of google cards.
 class Google(commands.Cog):
 
@@ -212,10 +211,14 @@ class Google(commands.Cog):
 
                 except:
                     return await ctx.send(
-                        'There were no results to your search. Use more common search query or make sure you have image search enabled for your custom search engine.')
+                        'There were no results to your search. \
+                        Use more common search query or make sure you have image search \
+                        enabled for your custom search engine.')
                 if len(result['items']) < 1:
                     return await ctx.send(
-                        'There were no results to your search. Use more common search query or make sure you have image search enabled for your custom search engine.')
+                        'There were no results to your search. \
+                        Use more common search query or make sure you have image search \
+                        enabled for your custom search engine.')
                 em = discord.Embed()
                 if embed_perms(ctx.message):
                     em.set_image(url=result['items'][item]['link'])
