@@ -3,7 +3,6 @@ import discord
 import random
 
 # Color constants are taken from discord.js library
-
 colors = {
     'DEFAULT': 0x000000,
     'WHITE': 0xFFFFFF,
@@ -166,7 +165,6 @@ class Embed(commands.Cog):
                     # Also add aliases, if there are any
                     if len(command.aliases) > 0:
                         help_text += f'*Also usable as: `{"`, `".join(command.aliases)}`*\n'
-
 
                     # Finally the format
                     help_text += f'How to use: **{command.usage if command.usage is not None else ""}**\n\n'

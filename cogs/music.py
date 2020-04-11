@@ -476,6 +476,7 @@ class Music(commands.Cog):
 
         ctx.state.songs.shuffle()
         await ctx.send('The queue has been shuffled')
+        #  possible add auto output for the new queue here
 
     @commands.command(
         name='remove',

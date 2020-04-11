@@ -32,6 +32,8 @@ bot = commands.Bot(  # Create a new bot
     case_insensitive=True  # Make the commands case insensitive
 )
 cogs = ['cogs.basic', 'cogs.embed', 'cogs.poll', 'cogs.google', 'cogs.music']
+
+
 # Load files from cogs directory
 
 
@@ -63,13 +65,4 @@ async def on_member_remove(member):
     await channel.send(f'{member} ({member.nick}) has left the server ;(')  # Announce member leaving
 
 
-# @bot.event
-# async def job():
-#     channel = bot.get_channel(bot_channel)
-#     await channel.send('@zhekoff#4341 :PepeSpit:')
-#     await schedule.every(5).seconds.do(job)
-#     while True:
-#         schedule.run_pending()
-#         time.sleep(1)
-# bot.run(TOKEN, bot=True, reconnect=True)
 bot.run(os.getenv('DISCORD_TOKEN'))
