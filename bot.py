@@ -1,4 +1,6 @@
 import os
+
+import aiohttp
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -6,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 bot_channel = 415919199760941058  # copy ID from Discord
 spit_chanel = 697802630923157638  # test server general channel
+GUILD = os.getenv('DISCORD_GUILD')
 
 
 def get_prefix(client, message):
@@ -29,12 +32,14 @@ bot = commands.Bot(  # Create a new bot
     owner_id=234381060018929664,  # Your unique User ID
     case_insensitive=True  # Make the commands case insensitive
 )
-cogs = ['cogs.basic', 'cogs.embed', 'cogs.poll']  # Load files from cogs directory
+cogs = ['cogs.basic', 'cogs.embed', 'cogs.poll', 'cogs.google']
+# Load files from cogs directory
 
 
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
+    bot.session = aiohttp.ClientSession(loop=bot.loop, headers={"User-Agent": "ThePeshBot"})
     await bot.change_presence(
         activity=discord.Game(
             name="with myself"))  # Changes bot activity
@@ -66,5 +71,5 @@ async def on_member_remove(member):
 #     while True:
 #         schedule.run_pending()
 #         time.sleep(1)
-
-bot.run(os.getenv('DISCORD_TOKEN'), bot=True, reconnect=True)
+# bot.run(TOKEN, bot=True, reconnect=True)
+bot.run(os.getenv('DISCORD_TOKEN'))
