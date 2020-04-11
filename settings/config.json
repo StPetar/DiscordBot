@@ -1,7 +1,0 @@
-{
-  "token": "os.getenv('DISCORD_TOKEN')",
-  "cmd_prefix": ">",
-  "customcmd_prefix": ".",
-  "bot_identifier": ":robot:",
-  "track": false
-}
