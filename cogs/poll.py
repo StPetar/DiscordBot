@@ -13,27 +13,32 @@ class Poll(commands.Cog):
     @commands.command(
         name='poll',
         description='Create a poll',
-        usage='[option1], [option2], [option3], [option4]... 10 options'
+        usage='<command prefix>TITLE, Option1, Option2, Option3.... max 10 options'
     )
-    async def quickpoll(self, ctx, question, *options: str):
-        if len(options) <= 1:
+    async def quickpoll(self, ctx, options=None, *inputs: str):
+        for input in inputs:
+            options +=" " + input
+            print(options)
+
+        list_of_answers = options.split(',')
+        if len(list_of_answers) <= 1:
             await ctx.send('You need more than one option to make a poll!')
             return
-        if len(options) > 10:
+        if len(list_of_answers) > 10:
             await ctx.send('You cannot make a poll for more than 10 things!')
             return
 
-        if len(options) == 2 and options[0] == 'yes' and options[1] == 'no':
+        if len(list_of_answers) == 2 and list_of_answers[0] == 'yes' and list_of_answers[1] == 'no':
             reactions = ['✅', '❌']
         else:
             reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟']
 
         description = []
-        for x, option in enumerate(options):
+        for x, option in enumerate(list_of_answers):
             description += '\n \n {} {}'.format(reactions[x], option)
-        embed = discord.Embed(title=question, description=''.join(description))
+        embed = discord.Embed(title=list_of_answers[0], description=''.join(description))
         react_message = await ctx.send(embed=embed)
-        for reaction in reactions[:len(options)]:
+        for reaction in reactions[:len(list_of_answers)]:
             await react_message.add_reaction(reaction)
         embed.set_footer(text='Poll ID: {}'.format(react_message.id))
         await react_message.edit(
