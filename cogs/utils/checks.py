@@ -4,7 +4,7 @@ import discord
 import os
 import aiohttp
 from pip._internal.vcs import git
-from discordbot.cogs.utils import dataIO
+from ..utils import dataIO
 from urllib.parse import quote as uriquote
 
 try:
