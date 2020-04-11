@@ -99,7 +99,7 @@ class Embed(commands.Cog):
         name='help',
         description='The help command!',
         aliases=['commands', 'command'],
-        usage='cog'
+        usage='help *command list*'
     )
     async def help_command(self, ctx, cog='all'):
         # The third parameter comes into play when
@@ -160,20 +160,16 @@ class Embed(commands.Cog):
                 #
                 # Format
                 for command in commands_list:
-                    help_text += f'```{command.name}```\n' \
-                                 f'**{command.description}**\n\n'
+                    help_text += f'```{command.name}```' \
+                                 f'**{command.description}**\n'
 
                     # Also add aliases, if there are any
                     if len(command.aliases) > 0:
-                        help_text += f'**Aliases :** `{"`, `".join(command.aliases)}`\n\n\n'
-                    else:
-                        # Add a newline character to keep it pretty
-                        # That IS the whole purpose of custom help
-                        help_text += '\n'
+                        help_text += f'*Also usable as: `{"`, `".join(command.aliases)}`*\n'
+
 
                     # Finally the format
-                    help_text += f'Format: `@{self.bot.user.name}#{self.bot.user.discriminator}' \
-                                 f' {command.name} {command.usage if command.usage is not None else ""}`\n\n\n\n'
+                    help_text += f'How to use: **{command.usage if command.usage is not None else ""}**\n\n'
 
                 help_embed.description = help_text
             else:
