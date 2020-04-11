@@ -85,9 +85,11 @@ class Music(commands.Cog):
             except:
                 pass
 
-    #  @commands.command(pass_context=True, no_pm=True)
-    #  async def join(self, ctx):
-
+    @commands.command(pass_context=True, no_pm=True)
+    async def join(self, ctx):
+        author = ctx.message.author
+        channel = author.voice.voice_channel
+        vc = await channel.connect(reconnect=True)
 
     @commands.command(pass_context=True, no_pm=True)
     async def play(self, ctx, *, song : str):
