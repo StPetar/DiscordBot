@@ -375,7 +375,7 @@ class Music(commands.Cog):
 
         if not ctx.state.is_done():
             ctx.state.voice.pause()
-            await ctx.message.add_reaction('⏯')
+            # await ctx.message.add_reaction('⏯')
 
     @commands.command(
         name='resume',
@@ -388,7 +388,7 @@ class Music(commands.Cog):
 
         if not ctx.state.is_done():
             ctx.state.voice.resume()
-            await ctx.message.add_reaction('⏯')
+            # await ctx.message.add_reaction('⏯')
 
     @commands.command(
         name='stop',
@@ -403,7 +403,7 @@ class Music(commands.Cog):
 
         if not ctx.state.is_done():
             ctx.state.voice.stop()
-            await ctx.message.add_reaction('⏹')
+            # await ctx.message.add_reaction('⏹')
 
     @commands.command(
         name='skip',
