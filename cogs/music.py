@@ -44,7 +44,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
     ytdl = youtube_dl.YoutubeDL(ytdl_opts)
 
-    def __init__(self, message, source, *, data, volume=0.15):
+    def __init__(self, message, source, *, data, volume=0.02):
         super().__init__(source, volume)
 
         self.requester = message.author
@@ -177,7 +177,7 @@ class VoiceState:
     def __init__(self, bot, ctx):
         self.current = None
         self.voice = None
-        self._volume = 0.5
+        self._volume = 0.02
         self.bot = bot
         self._ctx = ctx
         self.next = asyncio.Event()
