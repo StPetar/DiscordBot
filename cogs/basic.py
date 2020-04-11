@@ -1,18 +1,12 @@
 from discord.ext import commands
 from datetime import datetime as d
 import random
-import requests
-
-# New - The Cog class must extend the commands.Cog class
-from pip._vendor.urllib3.util import url
 
 
 class Basic(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
-
 
     # Define a new command
     @commands.command(
