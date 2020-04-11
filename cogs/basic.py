@@ -12,7 +12,6 @@ class Basic(commands.Cog):
     @commands.command(
         name='ping',
         description='The ping command',
-        aliases=['p']
     )
     async def ping_command(self, ctx):
         start = d.timestamp(d.now())
@@ -31,7 +30,7 @@ class Basic(commands.Cog):
 
     @commands.command(
         name='say',
-        description='The parrot command',
+        description='The parrot/repeat command',
         aliases=['repeat', 'parrot'],
         usage='<text>'
     )

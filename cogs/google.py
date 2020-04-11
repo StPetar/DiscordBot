@@ -5,8 +5,9 @@ from .utils.checks import load_optional_config, embed_perms, get_google_entries
 from .utils.config import get_config_value
 import urllib.parse
 
-
 '''Module for google web and image search.'''
+
+
 # Used Rapptz's implementation of google cards.
 class Google(commands.Cog):
 
@@ -83,8 +84,8 @@ class Google(commands.Cog):
         words = parent.find(".//ol/div[@class='g']/div/table/tr/td/h3[@class='r']")
         if words is not None:
             e.title = 'Google Translate'
-            e.add_field(name='Input', value=words[0].text,  inline=True)
-            e.add_field(name='Out', value=words[1].text,  inline=True)
+            e.add_field(name='Input', value=words[0].text, inline=True)
+            e.add_field(name='Out', value=words[1].text, inline=True)
             return e
 
         # check for "time in" card
@@ -144,12 +145,18 @@ class Google(commands.Cog):
 
         return e
 
-    @commands.command(pass_context=True)
-    async def g(self, ctx, *, query):
+    @commands.command(
+        pass_context=True,
+        description="Google web search",
+        usage='<command prefix>google [search term]'
+    )
+    async def google(self, ctx, *, query):
         """Google web search. Ex: [p]g what is discordapp?"""
         if not embed_perms(ctx.message):
             config = load_optional_config()
-            async with self.bot.session.get("https://www.googleapis.com/customsearch/v1?q=" + urllib.parse.quote_plus(query) + "&start=1" + "&key=" + config['google_api_key'] + "&cx=" + config['custom_search_engine']) as resp:
+            async with self.bot.session.get("https://www.googleapis.com/customsearch/v1?q=" + urllib.parse.quote_plus(
+                    query) + "&start=1" + "&key=" + config['google_api_key'] + "&cx=" + config[
+                                                'custom_search_engine']) as resp:
                 result = json.loads(await resp.text())
             return await ctx.send(result['items'][0]['link'])
 
@@ -175,7 +182,12 @@ class Google(commands.Cog):
                 msg = entries[0]
             await ctx.send(msg)
 
-    @commands.command(pass_context=True, aliases=['image', 'img'])
+    @commands.command(
+        pass_context=True,
+        name='image',
+        description="Google image search. First image result is sent in chat",
+        usage='<command prefix>image [search term]',
+        aliases=['img'])
     async def image_command(self, ctx, *, query):
         """Google image search. [p]i Lillie pokemon sun and moon"""
         await ctx.message.delete()
@@ -185,10 +197,13 @@ class Google(commands.Cog):
             query = query[1:]
         else:
             item = 0
-        async with self.bot.session.get("https://www.googleapis.com/customsearch/v1?q=" + urllib.parse.quote_plus(query) + "&start=" + '1' + "&key=" + config['google_api_key'] + "&cx=" + config['custom_search_engine'] + "&searchType=image") as resp:
+        async with self.bot.session.get("https://www.googleapis.com/customsearch/v1?q=" + urllib.parse.quote_plus(
+                query) + "&start=" + '1' + "&key=" + config['google_api_key'] + "&cx=" + config[
+                                            'custom_search_engine'] + "&searchType=image") as resp:
             if resp.status != 200:
                 if not config['google_api_key'] or not config['custom_search_engine']:
-                    return await ctx.send("You don't seem to have image searching configured properly. Refer to the wiki for details.")
+                    return await ctx.send(
+                        "You don't seem to have image searching configured properly. Refer to the wiki for details.")
                 return await ctx.send('Google failed to respond.')
             else:
                 result = json.loads(await resp.text())
@@ -196,9 +211,11 @@ class Google(commands.Cog):
                     result['items']
 
                 except:
-                    return await ctx.send('There were no results to your search. Use more common search query or make sure you have image search enabled for your custom search engine.')
+                    return await ctx.send(
+                        'There were no results to your search. Use more common search query or make sure you have image search enabled for your custom search engine.')
                 if len(result['items']) < 1:
-                    return await ctx.send('There were no results to your search. Use more common search query or make sure you have image search enabled for your custom search engine.')
+                    return await ctx.send(
+                        'There were no results to your search. Use more common search query or make sure you have image search enabled for your custom search engine.')
                 em = discord.Embed()
                 if embed_perms(ctx.message):
                     em.set_image(url=result['items'][item]['link'])

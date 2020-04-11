@@ -31,7 +31,7 @@ bot = commands.Bot(  # Create a new bot
     owner_id=234381060018929664,  # Your unique User ID
     case_insensitive=True  # Make the commands case insensitive
 )
-cogs = ['cogs.basic', 'cogs.embed', 'cogs.poll', 'cogs.google']
+cogs = ['cogs.basic', 'cogs.embed', 'cogs.poll', 'cogs.google', 'cogs.music']
 # Load files from cogs directory
 
 
@@ -46,6 +46,7 @@ async def on_ready():
     for cog in cogs:
         bot.load_extension(cog)
     return
+    print(f'{bot.user} has loaded all extensions/cogs')
 
 
 @bot.event
