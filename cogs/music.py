@@ -407,7 +407,8 @@ class Music(commands.Cog):
 
     @commands.command(
         name='skip',
-        description="Vote to skip a song. The requester can automatically skip.\n 3 skip votes are needed for the song to be skipped.",
+        description="Vote to skip a song. The requester can automatically skip.\n \
+         3 skip votes are needed for the song to be skipped.",
         usage='<command prefix>skip'
     )
     async def _skip(self, ctx):
@@ -474,7 +475,7 @@ class Music(commands.Cog):
             raise MusicError('Nothing in the queue.')
 
         ctx.state.songs.shuffle()
-        await ctx.message.add_reaction('✅')
+        await ctx.send('The queue has been shuffled')
 
     @commands.command(
         name='remove',
