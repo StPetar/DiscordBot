@@ -116,31 +116,27 @@ class Embed(commands.Cog):
             text=f'Requested by {ctx.message.author.name}',
             icon_url=self.bot.user.avatar_url
         )
-
-        # Get a list of all cogs
+        #
         cogs = [c for c in self.bot.cogs.keys()]
 
         # If cog is not specified by the user, we list all cogs and commands
 
         if cog == 'all':
             for cog in cogs:
-                # Get a list of all commands under each cog
 
-                cog_commands = self.bot.get_cog(cog).get_commands()
-                commands_list = ''
-                for comm in cog_commands:
-                    commands_list += f'**{comm.name}** - *{comm.description}*\n'
-
-                # Add the cog's details to the embed.
+            # Get a list of all commands under each cog
+            # cog_commands = self.bot.get_cog(cog).get_commands()
+            # commands_list = ''
+            # for comm in cog_commands:
+            #     commands_list += f'**{comm.name}*'
 
                 help_embed.add_field(
-                    name=cog,
-                    value=commands_list,
+                    name=f'help **{cog}** for more info.',
+                    value="\u200b",
                     inline=False
                 )
-            pass
+        # await ctx.send(embed=help_embed)
         else:
-
             # If the cog was specified
 
             lower_cogs = [c.lower() for c in cogs]
@@ -179,39 +175,40 @@ class Embed(commands.Cog):
 
         return
 
-    @commands.command(
-        name='info',
-        description='Show bot info',
-        aliases=['i']
-    )
-    async def info_command(self, ctx):
-        color_list = [c for c in colors.values()]
-        info_embed = discord.Embed(
-            title='Info',
-            color=random.choice(color_list)
-        )
-        info_embed.set_thumbnail(url=self.bot.user.avatar_url)
-        info_embed.set_footer(
-            text=f'Requested by {ctx.message.author.name}',
-            icon_url=self.bot.user.avatar_url
-        )
 
-        info_embed.add_field(
-            name='Author',
-            value='The Pesh',
-            inline=False
-        )
-        info_embed.add_field(
-            name="Description",
-            value=''' 
+@commands.command(
+    name='info',
+    description='Show bot info',
+    aliases=['i']
+)
+async def info_command(self, ctx):
+    color_list = [c for c in colors.values()]
+    info_embed = discord.Embed(
+        title='Info',
+        color=random.choice(color_list)
+    )
+    info_embed.set_thumbnail(url=self.bot.user.avatar_url)
+    info_embed.set_footer(
+        text=f'Requested by {ctx.message.author.name}',
+        icon_url=self.bot.user.avatar_url
+    )
+
+    info_embed.add_field(
+        name='Author',
+        value='The Pesh',
+        inline=False
+    )
+    info_embed.add_field(
+        name="Description",
+        value=''' 
     A dumbass made me\n
     Available prefixes to use with commands:\n
     =, ==, -, ., !, $, ?, -
     ''',
-            inline=False
-        )
-        await ctx.send(embed=info_embed)
-        return
+        inline=False
+    )
+    await ctx.send(embed=info_embed)
+    return
 
 
 def setup(bot):

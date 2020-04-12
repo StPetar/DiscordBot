@@ -1,3 +1,4 @@
+import math
 import os
 import random
 
@@ -38,10 +39,17 @@ bot = commands.Bot(  # Create a new bot
     owner_id=234381060018929664,  # Your unique User ID
     case_insensitive=True  # Make the commands case insensitive
 )
-cogs = ['cogs.basic', 'cogs.embed', 'cogs.poll', 'cogs.google', 'cogs.music', 'cogs.custom_join_leave']
+extensions = ['extensions.embed',
+              'extensions.basic',
+              'extensions.poll',
+              'extensions.google',
+              'extensions.music',
+              'extensions.customMsg',
+              'extensions.leveling'
+              ]
 
 
-# Load files from cogs directory
+# Load files from extensions directory
 
 
 @bot.event
@@ -52,9 +60,9 @@ async def on_ready():
         activity=discord.Game(
             name="with myself"))  # Changes bot activity
     bot.remove_command('help')  # Removes the help command
-    for cog in cogs:
-        bot.load_extension(cog)
-        print(f'{bot.user} has loaded extension {cog}')
+    for extension in extensions:
+        bot.load_extension(extension)
+        print(f'{bot.user} has loaded extension {extension}')
     return
 
 
@@ -130,6 +138,8 @@ async def on_member_remove(member):
         inline=False
     )
     await channel.send(embed=leave_embed)
+
+
 
 
 # Color constants are taken from discord.js library

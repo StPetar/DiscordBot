@@ -93,5 +93,3 @@ fabric.properties
 
 .env
 /settings
-*__pycache__
-__pycache__

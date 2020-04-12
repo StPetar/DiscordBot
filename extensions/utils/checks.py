@@ -14,7 +14,7 @@ except ImportError:
 from urllib.parse import parse_qs, quote_plus
 
 
-# from cogs.utils import common
+# from extensions.utils import common
 
 
 # @common.deprecation_warn()
