@@ -100,10 +100,10 @@
 #### Displays custom messages on member joining/leaving the server when a channel is set by using the set_message command from MessageSelect cog
 <div class="row">
   <div class="column">
-    <<img src="https://imgur.com/BoxhTpW.png" alt="Custom Join Message" width="40%" height="200" hspace="30">
+    <img src="https://imgur.com/BoxhTpW.png" alt="Custom Join Message" width="40%" height="200" hspace="20">
   </div>
   <div class="column">
-    <img src="https://imgur.com/HONGcbN.png" alt="Custom Leave Message" width="40%" height="200" hspace="30">
+    <img src="https://imgur.com/HONGcbN.png" alt="Custom Leave Message" width="40%" height="200" hspace="20">
   </div>
 </div>
 
