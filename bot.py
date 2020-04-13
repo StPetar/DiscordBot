@@ -17,9 +17,8 @@ def __init__(self, bot):
 
 
 def get_prefix(client, message):
-    prefixes = ['=', '==', '-', '.', '!', '$', '?',
-                '-']  # sets the prefixes, u can keep it as an array of only 1 item if you need only one prefix
-
+    prefixes = ['=', '==', '-', '.', '!', '$', '?']
+    # sets the prefixes, u can keep it as an array of only 1 item if you need only one prefix
     # Allow users to @mention the bot instead of using a prefix when using a command. Also optional
     # Do `return prefixes` if u don't want to allow mentions instead of prefix.
     return commands.when_mentioned_or(*prefixes)(client, message)
@@ -37,8 +36,8 @@ bot = commands.Bot(  # Create a new bot
     owner_id=234381060018929664,  # Your unique User ID
     case_insensitive=True  # Make the commands case insensitive
 )
-extensions = ['extensions.embed',
-              'extensions.basic',
+extensions = ['extensions.basic',
+              'extensions.embed',
               'extensions.poll',
               'extensions.google',
               'extensions.music',
