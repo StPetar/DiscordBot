@@ -102,62 +102,74 @@ class Leveling(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        print(f"Update in {member.guild}, {member} {before.channel} -> {after.channel}")
-        db = sqlite3.connect('main.sqlite')
-        cursor = db.cursor()
-        if before.channel is None:
-            start_time = time.time()
-            sql = (f'UPDATE levels '
-                   f'SET time_join = ? '
-                   f'WHERE guild_id = ? AND user_id = ?')
-            val = (start_time, member.guild.id, member.id)
-            cursor.execute(sql, val)
-            db.commit()
-        if after.channel is None and before.channel is not None:
-            cursor.execute(f'SELECT channel_id FROM main WHERE guild_id = {member.guild.id}')
+        if member.id is not self.bot.user.id:  # ignore bot activity
+            db = sqlite3.connect('main.sqlite')
+            cursor = db.cursor()
+            cursor.execute(f"SELECT user_id, exp, lvl, coins FROM levels "
+                           f"WHERE guild_id = '{member.guild.id}'"
+                           f"AND user_id = '{member.id}'")
             result = cursor.fetchone()
-            channel = member.guild.get_channel(int(result[0]))
-            cursor.execute(
-                f'SELECT user_id, exp, lvl, time_join, coins '
-                f'FROM levels '
-                f'WHERE guild_id = {member.guild.id} AND user_id = {member.id}')
-            result = cursor.fetchone()
-            end_time = time.time()
-            elapsed_time = end_time - result[3]
-            time_spent = f'{round(elapsed_time / 60)}min {round(elapsed_time % 60, 2)}sec'
-            print(f'{member} spent {time_spent} in a voice channel')
-            min_in_channel = (round(elapsed_time) / 60)
-            reward = math.floor((min_in_channel / 5) * 2)
-            await channel.send(
-                f'🔥 **{member.mention}** has been awarded {reward} exp for spending {time_spent} in a voice channel! 🔥')
-            exp = int(result[1]) + reward
-            lvl_start = int(result[2])
-            required_xp = math.floor(5 * (lvl_start ** 2) + 50 * lvl_start + 100)
-            coins = int(result[4])
-            if required_xp < exp and reward > 0:  # only if user leveled up call db commit if changes are made
-                exp = exp + reward
-                lvl_start = lvl_start + 1
-                coins = coins + coin_per_lvl
+            if result is None:
+                sql = (f"INSERT INTO levels(guild_id, user_id, exp, lvl, coins)"
+                       f"VALUES(?, ?, ?, ?, ?)")
+                val = (member.guild.id, member.id, exp_per_msg, 0, 0)
+                cursor.execute(sql, val)
+                db.commit()
+            print(f"Update in {member.guild}, {member} {before.channel} -> {after.channel}")
 
+            if before.channel is None:
+                start_time = time.time()
+                sql = (f'UPDATE levels '
+                       f'SET time_join = ? '
+                       f'WHERE guild_id = ? AND user_id = ?')
+                val = (start_time, member.guild.id, member.id)
+                cursor.execute(sql, val)
+                db.commit()
+            if after.channel is None and before.channel is not None:
+                cursor.execute(f'SELECT channel_id FROM main WHERE guild_id = {member.guild.id}')
+                result = cursor.fetchone()
+                channel = member.guild.get_channel(int(result[0]))
+                cursor.execute(
+                    f'SELECT user_id, exp, lvl, time_join, coins '
+                    f'FROM levels '
+                    f'WHERE guild_id = {member.guild.id} AND user_id = {member.id}')
+                result = cursor.fetchone()
+                end_time = time.time()
+                elapsed_time = end_time - result[3]
+                time_spent = f'{round(elapsed_time / 60)}min {round(elapsed_time % 60, 2)}sec'
+                print(f'{member} spent {time_spent} in a voice channel')
+                min_in_channel = (round(elapsed_time) / 60)
+                reward = math.floor((min_in_channel / 5) * 2)
                 await channel.send(
-                    f'🔥 **{member.mention}** has just advanced to level **{lvl_start}**! 🔥\n'
-                    f'          💰 You have also earned 5 coins 💰')
+                    f'🔥 **{member.mention}** has been awarded {reward} exp for spending {time_spent} in a voice channel! 🔥')
+                exp = int(result[1]) + reward
+                lvl_start = int(result[2])
+                required_xp = math.floor(5 * (lvl_start ** 2) + 50 * lvl_start + 100)
+                coins = int(result[4])
+                if required_xp < exp and reward > 0:  # only if user leveled up call db commit if changes are made
+                    exp = exp + reward
+                    lvl_start = lvl_start + 1
+                    coins = coins + coin_per_lvl
 
-                sql = "UPDATE levels " \
-                      "SET exp = ?, lvl = ?, coins = ? " \
-                      "WHERE guild_id = ? AND user_id = ?"
-                val = (exp, lvl_start, coins, str(member.guild.id), str(member.id))
-                cursor.execute(sql, val)
-                db.commit()
-            else:
-                sql = "UPDATE levels " \
-                      "SET exp = ?, lvl = ?, coins = ? " \
-                      "WHERE guild_id = ? AND user_id = ?"
-                val = (exp, lvl_start, coins, str(member.guild.id), str(member.id))
-                cursor.execute(sql, val)
-                db.commit()
-        cursor.close()
-        db.close()
+                    await channel.send(
+                        f'🔥 **{member.mention}** has just advanced to level **{lvl_start}**! 🔥\n'
+                        f'          💰 You have also earned 5 coins 💰')
+
+                    sql = "UPDATE levels " \
+                          "SET exp = ?, lvl = ?, coins = ? " \
+                          "WHERE guild_id = ? AND user_id = ?"
+                    val = (exp, lvl_start, coins, str(member.guild.id), str(member.id))
+                    cursor.execute(sql, val)
+                    db.commit()
+                else:
+                    sql = "UPDATE levels " \
+                          "SET exp = ?, lvl = ?, coins = ? " \
+                          "WHERE guild_id = ? AND user_id = ?"
+                    val = (exp, lvl_start, coins, str(member.guild.id), str(member.id))
+                    cursor.execute(sql, val)
+                    db.commit()
+            cursor.close()
+            db.close()
 
     @commands.command(
         name='leaderboard',
