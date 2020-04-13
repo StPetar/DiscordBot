@@ -102,13 +102,16 @@
 | ------------- |:-------------:|
 | <img src="https://imgur.com/HONGcbN.png" alt="Custom Leave Message" height="200"> | <img src="https://imgur.com/BoxhTpW.png" alt="Custom Join Message" height="200"> |
 
-*Every embed message has a colored accent that is picked at random from a list of colors
+*Every embed message has a colored accent that is picked at random from a list of colors*
 #### When joining any voice channel from a non-voice channel a timer is started per user. 
 #### When the user leaves an EXP reward of 2 per 5min spent in the voice channels is awarded and a custom message is sent in the selected bot text channel
+
 <img src="https://i.imgur.com/RfWdjfI.png" alt="Reward for time in voice channel">
+
 
 #### Custom messages are sent on level up
 *Example of the stats command being used*
+
 <img src="https://i.imgur.com/XSR3gNZ.png" alt="Reward for time in voice channel" width="450">
 <img src="https://i.imgur.com/zrXVVM7.png" alt="Reward for time in voice channel">
 
