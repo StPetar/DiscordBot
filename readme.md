@@ -98,8 +98,10 @@
 ## Extra Features
 
 #### Displays custom messages on member joining/leaving the server when a channel is set by using the set_message command from MessageSelect cog
-Custom Join Message | Custom Leave Message
-<img src="https://imgur.com/HONGcbN.png" alt="Custom Leave Message" width="50%" height="200" hspace="30"> | <img src="https://imgur.com/BoxhTpW.png" alt="Custom Join Message" width="50%" height="200" hspace="30">
+| Custom Join Message | Custom Leave Message |
+| ------------- |:-------------:|
+| <img src="https://imgur.com/HONGcbN.png" alt="Custom Leave Message" height="200"> | <img src="https://imgur.com/BoxhTpW.png" alt="Custom Join Message" height="200"> |
+
 #### When joining any voice channel from a non-voice channel a timer is started per user. 
 #### When the user leaves an EXP reward of 2 per 5min spent in the voice channels is awarded and a custom message is sent in the selected bot text channel
 #### 
