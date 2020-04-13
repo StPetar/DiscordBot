@@ -24,7 +24,7 @@ class Basic(commands.Cog):
         await msg.edit(content=f'Pong!\nOne message round-trip took {round((d.timestamp(d.now()) - start) * 1000)}ms.')
         # Ping completed and round-trip duration show in ms
         # Since it takes a while to send the messages
-        # it will calculate how much time it takes to edit an message.
+        # it will calculate how much time it takes to edit a message
         # It depends usually on your internet connection speed
         return
 
