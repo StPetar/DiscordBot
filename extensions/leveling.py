@@ -1,13 +1,10 @@
 import math
 import random
 import time
-
 import discord
 from discord.ext import commands
 import sqlite3
 
-bot_channel = '415919199760941058'  # Mansion
-# bot_channel = '697808268818645014'  #Test
 exp_per_msg = 2
 coin_per_lvl = 5
 
@@ -184,24 +181,27 @@ class Leveling(commands.Cog):
                 title='👑 **LEADERBOARD** 👑',
                 color=random.choice(color_list)
             )
-
-        for number, user in enumerate(result):
-            medals = ['🥈', '🥉', '🥇']
-            id = user[0]
+        user = ''
+        total_exp = ''
+        level = ''
+        medals = ['🥈', '🥉', '🥇']
+        for number, player in enumerate(result):
+            print(number)
+            name = await self.bot.fetch_user(int(player[0]))
             if number < 3:
-                leaderboard.add_field(
-                    name=f'*{await self.bot.fetch_user(int(id))}*',
-                    value=f'{medals[number - 1]}  {user[1]}exp    | {user[2]} Level   | {user[3]} Coins  {medals[number - 1]}',
-                    inline=False
-                )
+                user += medals[number - 1] + ' ' + str(name) + '\n'
+                level += player[2] + '\n'
+                total_exp += player[1] + '\n'
             else:
-                leaderboard.add_field(
-                    name=f'*{await self.bot.fetch_user(int(id))}*',
-                    value=f'{user[1]}exp    | {user[2]} Level   | {user[3]} Coins',
-                    inline=False
-                )
 
-        await ctx.send(embed=leaderboard)
+                user += '#' + str(number + 1) + ' ' + str(name) + '\n'
+                level += player[2] + '\n'
+                total_exp += player[1] + '\n'
+        leaderboard.add_field(name='__**Rank and Username**__', value=f'**{user}**', inline=True)
+        leaderboard.add_field(name='__**Level**__', value=f'{level}', inline=True)
+        leaderboard.add_field(name='__**Total Exp**__', value=f'{total_exp}', inline=True)
+
+        return await ctx.send(embed=leaderboard)
 
         cursor.close()
         db.close()
