@@ -1,13 +1,10 @@
 import math
 import random
 import time
-
 import discord
 from discord.ext import commands
 import sqlite3
 
-bot_channel = '415919199760941058'  # Mansion
-# bot_channel = '697808268818645014'  #Test
 exp_per_msg = 2
 coin_per_lvl = 5
 
@@ -192,7 +189,7 @@ class Leveling(commands.Cog):
             print(number)
             name = await self.bot.fetch_user(int(player[0]))
             if number < 3:
-                user += medals[number-1] + ' ' + str(name) + '\n'
+                user += medals[number - 1] + ' ' + str(name) + '\n'
                 level += player[2] + '\n'
                 total_exp += player[1] + '\n'
             else:
