@@ -1,7 +1,5 @@
-import math
 import os
 import random
-
 import aiohttp
 import discord
 from discord.ext import commands
@@ -140,8 +138,6 @@ async def on_member_remove(member):
     await channel.send(embed=leave_embed)
 
 
-
-
 # Color constants are taken from discord.js library
 colors = {
     'DEFAULT': 0x000000,
@@ -173,5 +169,4 @@ colors = {
     'DARK_BUT_NOT_BLACK': 0x2C2F33,
     'NOT_QUITE_BLACK': 0x23272A
 }
-
 bot.run(os.getenv('DISCORD_TOKEN'))
