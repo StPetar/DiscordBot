@@ -113,5 +113,5 @@
 *Example of the stats command being used*
 
 <img src="https://i.imgur.com/XSR3gNZ.png" alt="Reward for time in voice channel" width="450">
-<img src="https://i.imgur.com/zrXVVM7.png" alt="Reward for time in voice channel">
+<img src="https://i.imgur.com/zrXVVM7.png" alt="Reward for time in voice channel" width="450">
 
