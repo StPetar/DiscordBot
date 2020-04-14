@@ -146,11 +146,9 @@ class Leveling(commands.Cog):
                 lvl_start = int(result[2])
                 required_xp = math.floor(5 * (lvl_start ** 2) + 50 * lvl_start + 100)
                 coins = int(result[4])
-                if required_xp < exp and reward > 0:  # only if user leveled up call db commit if changes are made
-                    exp = exp + reward
+                if required_xp < exp:
                     lvl_start = lvl_start + 1
                     coins = coins + coin_per_lvl
-
                     await channel.send(
                         f'🔥 **{member.mention}** has just advanced to level **{lvl_start}**! 🔥\n'
                         f'          💰 You have also earned 5 coins 💰')
