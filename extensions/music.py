@@ -1,3 +1,9 @@
+# Code mostly sourced from EvieePy, vbe0201 and Rapptz and personal revision
+# https://gist.github.com/EvieePy/ab667b74e9758433b3eb806c53a19f34
+# https://gist.github.com/vbe0201/ade9b80f2d3b64643d854938d40a0a2d
+# https://github.com/Rapptz/discord.py
+
+
 import asyncio
 import functools
 import itertools
@@ -9,7 +15,6 @@ import youtube_dl
 from async_timeout import timeout
 from discord.ext import commands
 
-# Fuck your useless bug reports message that gets two link embeds and confuses users
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 
@@ -257,7 +262,7 @@ class Music(commands.Cog):
     def get_voice_state(self, ctx):
         state = self.voice_states.get(ctx.guild.id)
 
-        if state is None:
+        if not state or not state.exists:
             state = VoiceState(self.bot, ctx)
             self.voice_states[ctx.guild.id] = state
 
@@ -352,11 +357,12 @@ class Music(commands.Cog):
         if ctx.state.is_done():
             return await ctx.send('Nothing playing at the moment.')
 
-        if 0 > volume > 100:
+        if volume < 0 or volume > 100:
             return await ctx.send('Volume must be between 0 and 100.')
 
-        ctx.state.volume = volume / 100
-        await ctx.send(f'The player\'s volume was set to {volume}%')
+        else:
+            ctx.state.volume = volume / 100
+            await ctx.send(f'The player\'s volume was set to {volume}%')
 
     @commands.command(
         name='now',
@@ -532,3 +538,4 @@ class Music(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Music(bot))
+

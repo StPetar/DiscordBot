@@ -7,6 +7,9 @@ from discord.ext import commands
 from .utils.checks import load_optional_config, embed_perms, get_google_entries
 from .utils.config import get_config_value
 
+# The google search command currently does NOT work
+# The image search only returns the first result for the searched term
+# I will expand on this later to make it return a random one
 
 # Module for google web and image search.
 # Used Rapptz's implementation of google cards.
