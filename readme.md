@@ -1,3 +1,5 @@
+READ.ME STILL IN PROGRESS
+
 # Personal Project: Discord Bot in Python
 
 ## Available commands/functions
