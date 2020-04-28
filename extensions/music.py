@@ -14,7 +14,6 @@ import youtube_dl
 from async_timeout import timeout
 from discord.ext import commands
 
-# Fuck your useless bug reports message that gets two link embeds and confuses users
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 
