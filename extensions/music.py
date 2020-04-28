@@ -14,6 +14,7 @@ import youtube_dl
 from async_timeout import timeout
 from discord.ext import commands
 
+# Fuck your useless bug reports message that gets two link embeds and confuses users
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 
@@ -181,6 +182,7 @@ class SongQueue(asyncio.Queue):
 
 class VoiceState:
     def __init__(self, bot, ctx):
+        self.exists = True
         self.current = None
         self.voice = None
         self._volume = 0.02
@@ -203,6 +205,7 @@ class VoiceState:
                 async with timeout(300):  # 5 minutes
                     self.current = await self.songs.get()
             except asyncio.TimeoutError:
+                self.exists = False
                 return self.bot.loop.create_task(self.stop())
 
             self.current.source.volume = self._volume
@@ -258,7 +261,7 @@ class Music(commands.Cog):
     def get_voice_state(self, ctx):
         state = self.voice_states.get(ctx.guild.id)
 
-        if state is None:
+        if not state or not state.exists:
             state = VoiceState(self.bot, ctx)
             self.voice_states[ctx.guild.id] = state
 
@@ -353,11 +356,12 @@ class Music(commands.Cog):
         if ctx.state.is_done():
             return await ctx.send('Nothing playing at the moment.')
 
-        if 0 > volume > 100:
+        if volume < 0 or volume > 100:
             return await ctx.send('Volume must be between 0 and 100.')
 
-        ctx.state.volume = volume / 100
-        await ctx.send(f'The player\'s volume was set to {volume}%')
+        else:
+            ctx.state.volume = volume / 100
+            await ctx.send(f'The player\'s volume was set to {volume}%')
 
     @commands.command(
         name='now',
@@ -532,4 +536,4 @@ class Music(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Music(bot))  # Adds the Basic commands to the bot
+    bot.add_cog(Music(bot))
