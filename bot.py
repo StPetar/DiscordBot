@@ -56,7 +56,7 @@ async def on_ready():
     await bot.change_presence(
         activity=discord.Game(
             name="with myself"))  # Changes bot activity
-    bot.remove_command('help')  # Removes the help command
+    bot.remove_command('help')  # Removes the help command as I implement my own version of it
     for extension in extensions:
         bot.load_extension(extension)
         print(f'{bot.user} has loaded extension {extension}')
