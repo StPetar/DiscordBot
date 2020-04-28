@@ -18,11 +18,11 @@ class Basic(commands.Cog):
         # Gets the timestamp when the command was used
 
         msg = await ctx.send(content='Pinging')
-        # Sends a message to the user in the channel the message with the command was received.
+        # Sends a message to the user in the channel the message was sent in
         # Notifies the user that pinging has started
 
         await msg.edit(content=f'Pong!\nOne message round-trip took {round((d.timestamp(d.now()) - start) * 1000)}ms.')
-        # Ping completed and round-trip duration show in ms
+        # Ping completed and round-trip duration is shown in ms
         # Since it takes a while to send the messages
         # it will calculate how much time it takes to edit a message
         # It depends usually on your internet connection speed
@@ -37,7 +37,6 @@ class Basic(commands.Cog):
     async def say_command(self, ctx):
         # ctx - is the Context related to the command
         # https://discordpy.readthedocs.io/en/rewrite/ext/commands/api.html#context
-
         # Get the message with the command in it.
         msg = ctx.message.content
 
@@ -51,7 +50,7 @@ class Basic(commands.Cog):
         # Next, we check if the user actually passed some text
         if text == '':
             # User didn't specify the text
-            await ctx.send(content='You need to specify the text!')
+            await ctx.send(content='You need to specify the text which will be repeated!')
             pass
         else:
             # User specified the text.
@@ -75,7 +74,10 @@ class Basic(commands.Cog):
         usage='<question>'
 
     )
-    async def ball_command(self, ctx, *, question):  # renamed from _8ball to ball until i learn to code
+    # renamed from _8ball to ball until i learn to code
+    
+    #I have now learned to code a bit better and use decorators so 8ball is now a usable command
+    async def ball_command(self, ctx, *, question):  
         responses = [' As I see it, yes.',
                      ' Ask again later.',
                      ' Better not tell you now.',
