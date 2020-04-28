@@ -33,7 +33,7 @@ bot = commands.Bot(  # Create a new bot
     Availble prefixes to use with commands:\n
     =, ==, -, ., !, $, ?, -
     ''',
-    owner_id=234381060018929664,  # Your unique User ID
+    owner_id=2343***********64,  # Your unique User ID [censored]
     case_insensitive=True  # Make the commands case insensitive
 )
 extensions = ['extensions.basic',
