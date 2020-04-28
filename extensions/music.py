@@ -1,3 +1,9 @@
+# Code mostly sourced from EvieePy, vbe0201 and Rapptz and personal revision
+# https://gist.github.com/EvieePy/ab667b74e9758433b3eb806c53a19f34
+# https://gist.github.com/vbe0201/ade9b80f2d3b64643d854938d40a0a2d
+# https://github.com/Rapptz/discord.py
+
+
 import asyncio
 import functools
 import itertools
@@ -8,7 +14,6 @@ import youtube_dl
 from async_timeout import timeout
 from discord.ext import commands
 
-# Fuck your useless bug reports message that gets two link embeds and confuses users
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 
