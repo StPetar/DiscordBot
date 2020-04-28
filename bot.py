@@ -85,6 +85,11 @@ async def on_member_join(member):
     else:
         cursor.execute(f'SELECT msg FROM main WHERE guild_id = {member.guild.id}')
         channel = bot.get_channel(id=int(result[0]))
+        # await channel.send(
+        #     f'{member} has joined the server! \n{member}, you are the {msg} member!')  # Announce member joining
+        # The above function is now arbitrary but is kept here as an example for the set_message
+        # Command found in extensions/customMsg.py
+        
         # Get the number of unique users in the current server, this includes the new member
         members = len(list(member.guild.members))
         if members % 10 == 1:
@@ -112,7 +117,8 @@ async def on_member_join(member):
         inline=False
     )
     await channel.send(embed=join_embed)
-
+    cursor.close()
+    db.close()
 
 @bot.event
 async def on_member_remove(member):
