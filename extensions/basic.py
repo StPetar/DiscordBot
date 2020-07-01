@@ -46,7 +46,8 @@ class Basic(commands.Cog):
         # ctx.prefix gives the prefix used while invoking the command
         prefix_used = ctx.prefix
         alias_used = ctx.invoked_with
-        text = msg[len(prefix_used) + len(alias_used):]
+        print(f"MSG is: {msg}, prefix: {prefix_used} and alias: {alias_used}")
+        text = msg[len(prefix_used) + len(alias_used)+1:]
 
         # Next, we check if the user actually passed some text
         if text == '':
@@ -54,9 +55,15 @@ class Basic(commands.Cog):
             await ctx.send(content='You need to specify the text!')
             pass
         else:
-            # User specified the text.
-            await ctx.send(content=f"**{text}**")
-            pass
+            # Simple joke answer
+            print(text)
+            catch_idiot = {' im an idiot', ' im idiot', " I'm an idiot", " Im an idiot", " i'm an idiot"}
+            if text in catch_idiot:
+                await ctx.send(content="**We know you are 🙂**")
+            else:
+                # User specified the text.
+                await ctx.send(content=f"**{text}**")
+                pass
         return
 
     @commands.command(
