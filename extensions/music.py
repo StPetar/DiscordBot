@@ -44,6 +44,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     }
 
     ytdl = youtube_dl.YoutubeDL(ytdl_opts)
+    ytdl.cache.remove()
 
     def __init__(self, message, source, *, data, volume=0.02):
         super().__init__(source, volume)
@@ -176,6 +177,7 @@ class SongQueue(asyncio.Queue):
 
 class VoiceState:
     def __init__(self, bot, ctx):
+        self.exists = True
         self.current = None
         self.voice = None
         self._volume = 0.02
@@ -198,6 +200,7 @@ class VoiceState:
                 async with timeout(300):  # 5 minutes
                     self.current = await self.songs.get()
             except asyncio.TimeoutError:
+                self.exists = False
                 return self.bot.loop.create_task(self.stop())
 
             self.current.source.volume = self._volume
@@ -527,4 +530,4 @@ class Music(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Music(bot))  # Adds the Basic commands to the bot
+    bot.add_cog(Music(bot))
