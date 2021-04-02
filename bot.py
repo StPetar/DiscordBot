@@ -1,14 +1,13 @@
 import os
 import random
+import sqlite3
+
 import aiohttp
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-import sqlite3
 
 load_dotenv()
-bot_channel = 415919199760941058  # copy ID from Discord
-spit_chanel = 697802630923157638  # test server general channel
 GUILD = os.getenv('DISCORD_GUILD')
 
 
@@ -33,7 +32,8 @@ bot = commands.Bot(  # Create a new bot
     Availble prefixes to use with commands:\n
     =, ==, -, ., !, $, ?, -
     ''',
-    owner_id=234381060018929664,  # Your unique User ID
+    owner_id= os.getenv('OWNER_ID'),
+    # Your unique User ID
     case_insensitive=True  # Make the commands case insensitive
 )
 extensions = ['extensions.basic',

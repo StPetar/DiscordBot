@@ -1,9 +1,10 @@
 import math
 import random
+import sqlite3
 import time
+
 import discord
 from discord.ext import commands
-import sqlite3
 
 exp_per_msg = 2
 coin_per_lvl = 5

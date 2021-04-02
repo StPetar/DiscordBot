@@ -1,7 +1,7 @@
-from random import randint
 from json import decoder, dump, load
 from os import replace
 from os.path import splitext
+from random import randint
 
 
 class DataIO():

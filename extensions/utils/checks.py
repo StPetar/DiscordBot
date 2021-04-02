@@ -1,11 +1,13 @@
 import json
-import time
-import discord
 import os
-import aiohttp
-from pip._internal.vcs import git
-from ..utils import dataIO
+import time
 from urllib.parse import quote as uriquote
+
+import aiohttp
+import discord
+from pip._internal.vcs import git
+
+from ..utils import dataIO
 
 try:
     from lxml import etree
