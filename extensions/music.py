@@ -30,7 +30,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     ytdl_opts = {
         'format': 'bestaudio/best',
         'extractaudio': True,
-        'audioformat': 'mp3',
+        'audioformat': 'webm',
         'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
         'restrictfilenames': True,
         'noplaylist': True,
@@ -38,14 +38,13 @@ class YTDLSource(discord.PCMVolumeTransformer):
         'ignoreerrors': False,
         'logtostderr': False,
         'quiet': True,
-        'no_warnings': True,
+        'no_warnings': False,
         'default_search': 'auto',
         'source_address': '0.0.0.0',
-        'max-downloads': '25'
     }
 
     ffmpeg_opts = {
-        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5 -nostdin', 
         'options': '-vn',
     }
 

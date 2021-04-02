@@ -43,7 +43,6 @@ bot = commands.Bot(  # Create a new bot
 extensions = ['extensions.basic',
               'extensions.embed',
               'extensions.poll',
-              'extensions.google',
               'extensions.music',
               'extensions.customMsg',
               'extensions.leveling'
@@ -65,6 +64,7 @@ async def on_ready():
         # Load files from extensions directory
         # Print to keep an eye if all of the files get loaded
     return
+
 
 
 @bot.event

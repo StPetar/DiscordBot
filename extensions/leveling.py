@@ -8,35 +8,32 @@ from discord.ext import commands
 
 # Set values to whatever you would like
 exp_per_msg = 2
-coin_per_lvl = 5
-
-
-def __init__(self, bot):
-    self.bot = bot
-
-
+bot_id = 697795069079584918
 # New - The Cog class must extend the commands.Cog class
 class Leveling(commands.Cog):
+    
     def __init__(self, bot):
         self.bot = bot
-
+        
     @commands.Cog.listener()
     # The listener decorator keeps track of messages without the need to run commands
     async def on_message(self, message):
         db = sqlite3.connect('main.sqlite')
         cursor = db.cursor()
+        
         # Exp bonuses only for for users which are not the BOT to reduce DB usage
-        if message.author.id is not self.bot.user.id:
+        if self.bot.user != message.author:
             # Fetch the user info from the DB
-            cursor.execute(f"SELECT user_id, exp, lvl, coins FROM levels "
-                           f"WHERE guild_id = '{message.author.guild.id}'"
+            cursor.execute(f"SELECT user_id, exp, lvl FROM leveling "
+                           f"WHERE guild_id = '{message.author.guild.id}' "
                            f"AND user_id = '{message.author.id}'")
+
             result = cursor.fetchone()
             # If the user was not in the DB, add him
             if result is None:
-                sql = (f"INSERT INTO levels(guild_id, user_id, exp, lvl, coins)"
-                       f"VALUES(?, ?, ?, ?, ?)")
-                val = (message.author.guild.id, message.author.id, exp_per_msg, 0, 0)
+                sql = (f"INSERT INTO leveling(guild_id, user_id, exp, lvl)"
+                       f"VALUES(?, ?, ?, ?)")
+                val = (message.author.guild.id, message.author.id, exp_per_msg, 0)
                 cursor.execute(sql, val)
                 db.commit()
             else:
@@ -44,19 +41,18 @@ class Leveling(commands.Cog):
                 exp = int(result[1]) + exp_per_msg
                 lvl_start = int(result[2])
                 required_xp = math.floor(5 * (lvl_start ** 2) + 50 * lvl_start + 100)
-                coins = int(result[3])
+                
                 if required_xp < exp:
                     lvl_start = lvl_start + 1
-                    coins = int(result[3]) + coin_per_lvl
-
+                
                     await message.channel.send(
-                        f'🔥 **{message.author.mention}** has just advanced to level **{lvl_start}**! 🔥\n'
-                        f'          💰 You have also earned 5 coins 💰')
+                        f'🔥 **{message.author.mention}** has just leveled up and reached Level **{lvl_start}**! 🔥')
+                
                 # Update user info
-                sql = "UPDATE levels " \
-                      "SET exp = ?, lvl = ?, coins = ? " \
-                      "WHERE guild_id = ? AND user_id = ?"
-                val = (exp, lvl_start, coins, str(message.author.guild.id), str(message.author.id))
+                sql =  (f'UPDATE leveling '
+                        f'SET exp = ?, lvl = ? '
+                        f'WHERE guild_id = ? AND user_id = ?')
+                val = (exp, lvl_start, str(message.author.guild.id), str(message.author.id))
                 cursor.execute(sql, val)
         # Commit changes and close connections to DB
         db.commit()
@@ -76,7 +72,7 @@ class Leveling(commands.Cog):
         # If the user is specified in the message, fetch his info
         if user is not None:
             cursor.execute(
-                f"SELECT user_id, exp, lvl, coins FROM levels "
+                f"SELECT user_id, exp, lvl FROM leveling "
                 f"WHERE guild_id = '{ctx.message.guild.id}' "
                 f"AND user_id = '{user.id}'")
             result = cursor.fetchone()
@@ -90,13 +86,12 @@ class Leveling(commands.Cog):
                 required_xp = math.floor(5 * (lvl_start ** 2) + 50 * lvl_start + 100)
                 remaining_exp = required_xp - int(result[1])
                 await ctx.send(
-                    f'{user.name} is currently Level {result[2]} - {remaining_exp} exp remaining until next Level \n'
-                    f'Also has 💰 {result[3]} Coins in his pocket!')
+                    f'{user.name} is currently Level {result[2]} - {remaining_exp} exp remaining until next Level ')
                 
         # If no user is specified when using the command, fetch the author's info
         elif user is None:
             cursor.execute(
-                f"SELECT user_id, exp, lvl, coins FROM levels "
+                f"SELECT user_id, exp, lvl FROM leveling "
                 f"WHERE guild_id = '{ctx.message.guild.id}' "
                 f"AND user_id = '{ctx.message.author.id}'")
             result = cursor.fetchone()
@@ -110,8 +105,7 @@ class Leveling(commands.Cog):
                 required_xp = math.floor(5 * (lvl_start ** 2) + 50 * lvl_start + 100)
                 remaining_exp = required_xp - int(result[1])
                 await ctx.send(
-                    f'{ctx.message.author} is currently Level {result[2]} - {remaining_exp} exp remaining until next Level \n'
-                    f'Also has 💰 {result[3]} Coins in his pocket!')
+                    f'{ctx.message.author} is currently Level {result[2]} - {remaining_exp} exp remaining until next Level')
         cursor.close()
         db.close()
 
@@ -123,19 +117,21 @@ class Leveling(commands.Cog):
         # Ignore bot activity as I'd like to keep the rankings only for actual users
         # And the bot having multiple answers to commands and spending time in voice channels for music
         # Would result in it likely topping said rankings eventually
-        if member.id is not self.bot.user.id:
+        if member.id != self.bot.user.id:
+            
             db = sqlite3.connect('main.sqlite')
             cursor = db.cursor()
             # Fetch user info
-            cursor.execute(f"SELECT user_id, exp, lvl, coins FROM levels "
-                           f"WHERE guild_id = '{member.guild.id}'"
+            cursor.execute(f"SELECT user_id, exp, lvl FROM leveling "
+                           f"WHERE guild_id = '{member.guild.id}' "
                            f"AND user_id = '{member.id}'")
             result = cursor.fetchone()
+            
             # If the user hadn't typed anything in chat so far and is not in the DB, add him
             if result is None:
-                sql = (f"INSERT INTO levels(guild_id, user_id, exp, lvl, coins)"
-                       f"VALUES(?, ?, ?, ?, ?)")
-                val = (member.guild.id, member.id, exp_per_msg, 0, 0)
+                sql = (f"INSERT INTO leveling(guild_id, user_id, exp, lvl) "
+                       f"VALUES(?, ?, ?, ?)")
+                val = (member.guild.id, member.id, exp_per_msg, 0)
                 cursor.execute(sql, val)
                 db.commit()
             print(f"Update in {member.guild}, {member} {before.channel} -> {after.channel}")
@@ -143,7 +139,7 @@ class Leveling(commands.Cog):
             if before.channel is None:
                 #Record the time when the user joined and update it in the DB
                 start_time = time.time()
-                sql = (f'UPDATE levels '
+                sql = (f'UPDATE leveling '
                        f'SET time_join = ? '
                        f'WHERE guild_id = ? AND user_id = ?')
                 val = (start_time, member.guild.id, member.id)
@@ -151,16 +147,18 @@ class Leveling(commands.Cog):
                 db.commit()
             # Fetch user's info when he leaves a voice channel
             if after.channel is None and before.channel is not None:
+                print('leaving to none')
                 # Fetch bot channel from DB (This is where all bot answers are sent to, check extensions/customMsg.py)
                 cursor.execute(f'SELECT channel_id FROM main WHERE guild_id = {member.guild.id}')
                 result = cursor.fetchone()
                 channel = member.guild.get_channel(int(result[0]))
                 # Fetch user info
                 cursor.execute(
-                    f'SELECT user_id, exp, lvl, time_join, coins '
-                    f'FROM levels '
+                    f'SELECT user_id, exp, lvl, time_join '
+                    f'FROM leveling '
                     f'WHERE guild_id = {member.guild.id} AND user_id = {member.id}')
                 result = cursor.fetchone()
+                print(result)
                 # Record the time when the user left and calculate rewards
                 end_time = time.time()
                 elapsed_time = end_time - result[3]
@@ -175,28 +173,27 @@ class Leveling(commands.Cog):
                 exp = int(result[1]) + reward
                 lvl_start = int(result[2])
                 required_xp = math.floor(5 * (lvl_start ** 2) + 50 * lvl_start + 100)
-                coins = int(result[4])
+                
 
                 # Only if user leveled up
                 if required_xp < exp:
                     lvl_start = lvl_start + 1
-                    coins = coins + coin_per_lvl
+                    
                     await channel.send(
-                        f'🔥 **{member.mention}** has just advanced to level **{lvl_start}**! 🔥\n'
-                        f'          💰 You have also earned 5 coins 💰')
+                        f'🔥 **{member.mention}** has just advanced to level **{lvl_start}**! 🔥')
 
-                    sql = "UPDATE levels " \
-                          "SET exp = ?, lvl = ?, coins = ? " \
+                    sql = "UPDATE leveling " \
+                          "SET exp = ?, lvl = ? " \
                           "WHERE guild_id = ? AND user_id = ?"
-                    val = (exp, lvl_start, coins, str(member.guild.id), str(member.id))
+                    val = (exp, lvl_start, str(member.guild.id), str(member.id))
                     cursor.execute(sql, val)
                     db.commit()
                 else:
                     # Update only the exp as it's the only thing that changed
-                    sql = "UPDATE levels " \
-                          "SET exp = ?" \
+                    sql = "UPDATE leveling " \
+                          "SET exp = ? " \
                           "WHERE guild_id = ? AND user_id = ?"
-                    val = (exp, lvl_start, coins, str(member.guild.id), str(member.id))
+                    val = (exp, str(member.guild.id), str(member.id))
                     cursor.execute(sql, val)
                     db.commit()
             cursor.close()
@@ -214,8 +211,8 @@ class Leveling(commands.Cog):
         cursor = db.cursor()
         # Fetch all users info in descending order by EXP
         cursor.execute(
-            f"SELECT user_id, exp, lvl, coins "
-            f"FROM levels "
+            f"SELECT user_id, exp, lvl "
+            f"FROM leveling "
             f"WHERE guild_id = '{ctx.message.guild.id}'"
             f"ORDER BY exp desc")
         result = cursor.fetchall()
@@ -252,8 +249,6 @@ class Leveling(commands.Cog):
         cursor.close()
         db.close()
 
-
-        # TODO add stuff to buy with coins: exp boosts, roles, name colors ??????
 
 colors = {
     'DEFAULT': 0x000000,
