@@ -2,6 +2,9 @@ import random
 import discord
 from discord.ext import commands
 
+import discord
+from discord.ext import commands
+
 # Color constants are taken from discord.js library
 colors = {
     'DEFAULT': 0x000000,
